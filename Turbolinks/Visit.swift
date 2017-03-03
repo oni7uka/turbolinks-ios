@@ -136,20 +136,12 @@ class Visit: NSObject {
 
 class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     fileprivate var navigation: WKNavigation?
-    lazy var cookies: String = {
-        var result = [String]()
-        HTTPCookieStorage.shared.cookies?.forEach({ (cookie) in
-            result.append("\(cookie.name)=\(cookie.value)")
-        })
-        return result.joined(separator: ";")
-    }()
 
     override fileprivate func startVisit() {
         webView.navigationDelegate = self
         webView.pageLoadDelegate = self
 
-        var request = URLRequest(url: location)
-        request.addValue(cookies, forHTTPHeaderField: "Cookie")
+        let request = URLRequest(url: location)
         navigation = webView.load(request)
 
         delegate?.visitDidStart(self)
